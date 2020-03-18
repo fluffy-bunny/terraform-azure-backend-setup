@@ -41,5 +41,4 @@ jobs:
       run: |
         pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
         export ARM_ACCESS_KEY=$(az keyvault secret show --name terraform-backend-key --vault-name kv-tf-azFunc-guidgen --query value -o tsv)
-        echo $ARM_ACCESS_KEY
         popd
