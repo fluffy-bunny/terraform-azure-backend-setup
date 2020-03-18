@@ -3,7 +3,10 @@ name: Deploy DotNet project to Azure Function App
 on:
   [push]
 
-
+env:
+  FRIENDLY_NAME: azFunc-guidgen  
+  SHORT_NAME: FuncGuidGen  
+  LOCATION: 'eastus2'                
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -21,5 +24,5 @@ jobs:
       run: |
         pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
         ls
-        bash ./bash/setup.sh azFunc-guidgen eastus2 FuncGuidGen
+        bash ./bash/setup.sh ${{ env.FRIENDLY_NAME }} ${{ env.SHORT_NAME }} ${{ env.LOCATION }}
         popd

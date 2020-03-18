@@ -1,6 +1,6 @@
 die () {
     echo >&2 "$@"
-    echo "$ ./setup.sh [APP_FRIENDLY_NAME] [SHORT_NAME] [LOCATION]"
+    echo "$ ./setup.sh [FRIENDLY_NAME] [LOCATION] [SHORT_NAME] "
     exit 1
 }
 REQUIRED_ARGS=3
@@ -9,9 +9,10 @@ REQUIRED_ARGS=3
 echo "Positional Parameters"
 echo '$0 = '$0
 echo '$1 = '$1
-APP_FRIENDLY_NAME=$1
-LOCATION=$2
-SHORT_NAME=$3
+FRIENDLY_NAME=$1
+SHORT_NAME=$2
+LOCATION=$3
+
 
 length=${#SHORT_NAME}
 if [ $length -lt 2 -o $length -gt 11 ] ;then
@@ -27,12 +28,12 @@ if grep '^[-0-9a-zA-Z]*$' <<<$SHORT_NAME ;
     die
 fi
 
-RESOURCE_GROUP_NAME="rg-terraform-$APP_FRIENDLY_NAME"
+RESOURCE_GROUP_NAME="rg-terraform-$FRIENDLY_NAME"
 CONTAINER_NAME="tstate"
 STORAGE_ACCOUNT_NAME="stterraform$SHORT_NAME"
-KV_NAME="kv-tf-$APP_FRIENDLY_NAME"
+KV_NAME="kv-tf-$FRIENDLY_NAME"
 
-echo 'APP_FRIENDLY_NAME:    '$APP_FRIENDLY_NAME
+echo 'FRIENDLY_NAME:        '$FRIENDLY_NAME
 echo 'SHORT_NAME:           '$SHORT_NAME
 echo 'LOCATION:             '$LOCATION
 echo 'RESOURCE_GROUP_NAME:  '$RESOURCE_GROUP_NAME
