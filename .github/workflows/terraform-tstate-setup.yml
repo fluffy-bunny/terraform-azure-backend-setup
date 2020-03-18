@@ -21,5 +21,5 @@ jobs:
       run: |
         pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
         ls
-        bash ./bash/setup.sh azFunc-guidgen eastus2
+        bash ./bash/setup.sh azFunc-guidgen eastus2 FuncGuidGen
         popd

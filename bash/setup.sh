@@ -1,26 +1,39 @@
 die () {
     echo >&2 "$@"
-    echo "$ ./setup.sh [APP_FRIENDLY_NAME] [LOCATION]"
+    echo "$ ./setup.sh [APP_FRIENDLY_NAME] [SHORT_NAME] [LOCATION]"
     exit 1
 }
-REQUIRED_ARGS=2
+REQUIRED_ARGS=3
 [ "$#" -eq $REQUIRED_ARGS ] || die "$REQUIRED_ARGS argument required, $# provided"
 
-random-string() {
-        cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w ${1:-12} | head -n 1
-}
 echo "Positional Parameters"
 echo '$0 = '$0
 echo '$1 = '$1
 APP_FRIENDLY_NAME=$1
 LOCATION=$2
-RANDOM_STRING=$(random-string)
+SHORT_NAME=$3
+
+length=${#SHORT_NAME}
+if [ $length -lt 2 -o $length -gt 11 ] ;then
+    echo "length invalid"
+    die
+fi
+if grep '^[-0-9a-zA-Z]*$' <<<$SHORT_NAME ;
+  then 
+    SHORT_NAME=${SHORT_NAME,,}
+    echo ok;
+  else 
+    echo $SHORT_NAME must be ALPHANUMERIC;
+    die
+fi
+
 RESOURCE_GROUP_NAME="rg-terraform-$APP_FRIENDLY_NAME"
 CONTAINER_NAME="tstate"
-STORAGE_ACCOUNT_NAME="stterraform$RANDOM_STRING"
+STORAGE_ACCOUNT_NAME="stterraform$SHORT_NAME"
 KV_NAME="kv-tf-$APP_FRIENDLY_NAME"
 
 echo 'APP_FRIENDLY_NAME:    '$APP_FRIENDLY_NAME
+echo 'SHORT_NAME:           '$SHORT_NAME
 echo 'LOCATION:             '$LOCATION
 echo 'RESOURCE_GROUP_NAME:  '$RESOURCE_GROUP_NAME
 echo 'CONTAINER_NAME:       '$CONTAINER_NAME
