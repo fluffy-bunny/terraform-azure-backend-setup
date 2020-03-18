@@ -8,7 +8,7 @@ env:
   SHORT_NAME: FuncGuidGen  
   LOCATION: 'eastus2'                
 jobs:
-  build-and-deploy:
+  Setup-Azure-Terraform-Backend-State-Management:
     runs-on: ubuntu-latest
     steps:
     - name: 'az login'
@@ -25,4 +25,21 @@ jobs:
         pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
         ls
         bash ./bash/setup.sh ${{ env.FRIENDLY_NAME }} ${{ env.SHORT_NAME }} ${{ env.LOCATION }}
+        popd
+  Main-Terraform:
+    needs: Setup-Azure-Terraform-Backend-State-Management
+    runs-on: ubuntu-latest
+    steps:
+    - name: 'az login'
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    - name: 'Checkout GitHub Action'
+      uses: actions/checkout@master
+    - name: 'EXPORT ARM_ACCESS_KEY'
+      shell: bash
+      run: |
+        pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
+        export ARM_ACCESS_KEY=$(az keyvault secret show --name terraform-backend-key --vault-name kv-tf-azFunc-guidgen --query value -o tsv)
+        echo $ARM_ACCESS_KEY
         popd
