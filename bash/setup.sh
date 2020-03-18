@@ -55,11 +55,12 @@ az group create \
 
  
 echo "====== Creating KEY VAULT:  $KV_NAME ================="
+
 az keyvault create \
     --location $LOCATION \
     --name $KV_NAME \
     --resource-group $RESOURCE_GROUP_NAME
-
+    
 # Create storage account
 az storage account create \
     --resource-group $RESOURCE_GROUP_NAME \
