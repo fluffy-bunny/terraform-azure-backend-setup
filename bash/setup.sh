@@ -6,14 +6,18 @@ die () {
 REQUIRED_ARGS=2
 [ "$#" -eq $REQUIRED_ARGS ] || die "$REQUIRED_ARGS argument required, $# provided"
 
+random-string() {
+        cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w ${1:-12} | head -n 1
+}
 echo "Positional Parameters"
 echo '$0 = '$0
 echo '$1 = '$1
 APP_FRIENDLY_NAME=$1
 LOCATION=$2
+RANDOM_STRING=$(random-string)
 RESOURCE_GROUP_NAME="rg-terraform-$APP_FRIENDLY_NAME"
 CONTAINER_NAME="tstate"
-STORAGE_ACCOUNT_NAME="stterraform$APP_FRIENDLY_NAME"
+STORAGE_ACCOUNT_NAME="stterraform$RANDOM_STRING"
 KV_NAME="kv-tf-$APP_FRIENDLY_NAME"
 
 echo 'APP_FRIENDLY_NAME:    '$APP_FRIENDLY_NAME
