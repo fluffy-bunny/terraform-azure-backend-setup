@@ -1,0 +1,25 @@
+name: Deploy DotNet project to Azure Function App
+
+on:
+  [push]
+
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: 'az login'
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: 'Checkout GitHub Action'
+      uses: actions/checkout@master
+
+    - name: 'Resolve Project Dependencies Using Dotnet'
+      shell: bash
+      run: |
+        pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
+        ls
+        ./bash/setup.sh
+        popd
