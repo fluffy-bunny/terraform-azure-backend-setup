@@ -45,10 +45,13 @@ jobs:
         pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
         echo 'export ARM_ACCESS_KEY=$(az keyvault secret show --name terraform-backend-key --vault-name ${{ env.VAULT_NAME }} --query value -o tsv)'
         export ARM_ACCESS_KEY=$(az keyvault secret show --name terraform-backend-key --vault-name ${{ env.VAULT_NAME }} --query value -o tsv)
-        export ARM_CLIENT_ID="${{ secrets.ARM_CLIENT_ID }}"
-        export ARM_CLIENT_SECRET="${{ secrets.ARM_CLIENT_SECRET }}"
-        export ARM_SUBSCRIPTION_ID="${{ secrets.ARM_SUBSCRIPTION_ID }}"
-        export ARM_TENANT_ID="${{ secrets.ARM_TENANT_ID }}"
+        export ARM_CLIENT_ID=${{ secrets.ARM_CLIENT_ID }}
+        export ARM_CLIENT_SECRET=${{ secrets.ARM_CLIENT_SECRET }}
+        export ARM_SUBSCRIPTION_ID=${{ secrets.ARM_SUBSCRIPTION_ID }}
+        export ARM_TENANT_ID=${{ secrets.ARM_TENANT_ID }}
+        echo 'ARM_TENANT_ID:      '$ARM_TENANT_ID
+        echo 'ARM_SUBSCRIPTION_ID:'$ARM_SUBSCRIPTION_ID
+        echo 'ARM_CLIENT_ID:      '$ARM_CLIENT_ID
         popd
     - name: 'Install Terraform'
       shell: bash
@@ -60,8 +63,8 @@ jobs:
           echo "Directory terraform exists." 
           rm -r terraform
         fi
-        wget https://releases.hashicorp.com/terraform/0.12.23/terraform_0.12.23_linux_amd64.zip
-        unzip terraform_0.12.23_linux_amd64.zip 
+        wget https://releases.hashicorp.com/terraform/0.12.24/terraform_0.12.24_linux_amd64.zip
+        unzip terraform_0.12.24_linux_amd64.zip 
         sudo cp terraform /usr/local/bin
         sudo chmod +x /usr/local/bin
         terraform --version 
