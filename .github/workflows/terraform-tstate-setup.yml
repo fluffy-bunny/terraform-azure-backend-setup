@@ -55,9 +55,15 @@ jobs:
       run: |
         pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
         sudo apt-get install wget unzip
-        wget https://releases.hashicorp.com/terraform/0.12.23/terraform_0.12.23_linux_amd64.zip
-        unzip terraform_0.12.23_linux_amd64.zip 
-        sudo yes | cp terraform /usr/local/bin
+
+        if [ -d "terraform" ] 
+        then
+          echo "Directory terraform exists." 
+        else
+          wget https://releases.hashicorp.com/terraform/0.12.23/terraform_0.12.23_linux_amd64.zip
+          unzip terraform_0.12.23_linux_amd64.zip 
+        fi
+        sudo cp terraform /usr/local/bin
         sudo chmod +x /usr/local/bin
         terraform --version 
         popd
