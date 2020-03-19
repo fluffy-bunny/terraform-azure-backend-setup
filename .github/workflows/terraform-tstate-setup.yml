@@ -77,6 +77,13 @@ jobs:
       shell: bash
       run: |
         pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
+        echo 'export ARM_ACCESS_KEY=$(az keyvault secret show --name terraform-backend-key --vault-name ${{ env.VAULT_NAME }} --query value -o tsv)'
+        export ARM_ACCESS_KEY=$(az keyvault secret show --name terraform-backend-key --vault-name ${{ env.VAULT_NAME }} --query value -o tsv)
+        export ARM_CLIENT_ID='${{secrets.ARM_CLIENT_ID}}'
+        export ARM_CLIENT_SECRET='${{secrets.ARM_CLIENT_SECRET}}'
+        export ARM_SUBSCRIPTION_ID=$(az account show --query id | xargs)
+        export ARM_TENANT_ID=$(az account show --query tenantId | xargs)
+        
         terraform --version 
         ls
         cd src/
