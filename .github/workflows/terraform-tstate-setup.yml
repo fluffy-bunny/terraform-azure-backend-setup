@@ -71,7 +71,9 @@ jobs:
       shell: bash
       run: |
         pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
+        terraform --version 
         ls
         cd terraform/
+        ls
         terraform init 
         popd
