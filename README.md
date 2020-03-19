@@ -1,5 +1,9 @@
 # terraform-azure-backend-setup
-Sets up an Azure storage account to use for terraform state management
+Sets up an Azure storage account to use for terraform state management is a 2 step process.
+1. Create a service principal that has the rights to create resources in a given subscription.
+2. Setup azure to store terraforms state.  A tutorial can be found [here](https://docs.microsoft.com/en-us/azure/terraform/terraform-backend)  
+
+Once that is done, we can then start creating resources the terraform way.  
 
 # Reference
 [terraform service_principal_client_secret](https://www.terraform.io/docs/providers/azurerm/guides/service_principal_client_secret.html)  
@@ -49,6 +53,26 @@ ARM_TENANT_ID = <GUID>
 ```  
 
 The [github action](.github/workflows/terraform-tstate-setup.yml) will pull this data from secrets and export it to environment variables.  
+
+# Azure Storage of Terraform State.  
+
+following the [tutorial](https://docs.microsoft.com/en-us/azure/terraform/terraform-backend) I have create a [bash script](bash/setup.sh) which gets called from our [github action](.github/workflows/terraform-tstate-setup.yml)  
+
+The end state of the script produces a Key Vault and StorageAccount in a resource group dedicated to just terraform.  
+the following script is then run downstream so that terraform knows where to store state;  
+```
+export ARM_ACCESS_KEY=$(az keyvault secret show --name terraform-backend-key --vault-name kv-tf-<FRIENDLY_NAME> --query value -o tsv)
+```
+For terraform to run the following exports need to be present;  
+```bash
+export ARM_ACCESS_KEY=$(az keyvault secret show --name terraform-backend-key --vault-name ${{ env.VAULT_NAME }} --query value -o tsv)
+export ARM_CLIENT_ID='${{secrets.ARM_CLIENT_ID}}'
+export ARM_CLIENT_SECRET='${{secrets.ARM_CLIENT_SECRET}}'
+export ARM_SUBSCRIPTION_ID=$(az account show --query id | xargs)
+export ARM_TENANT_ID=$(az account show --query tenantId | xargs)
+```
+since I do an Azure Login, I just pull some of the ID's based on the current logged in principal.  
+
 
 
 
