@@ -70,8 +70,9 @@ jobs:
     - name: 'Terraform Init'
       shell: bash
       run: |
-        pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}terraform/'
+        pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
         terraform --version 
         ls
+        cd src/
         terraform init 
         popd
