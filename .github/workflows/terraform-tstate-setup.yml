@@ -38,24 +38,7 @@ jobs:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
     - name: 'Checkout GitHub Action'
       uses: actions/checkout@master
-    - name: 'EXPORT ARM_ACCESS_KEY'
-      shell: bash
-      run: |
-        az account show
-        pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
-        echo 'export ARM_ACCESS_KEY=$(az keyvault secret show --name terraform-backend-key --vault-name ${{ env.VAULT_NAME }} --query value -o tsv)'
-        export ARM_ACCESS_KEY=$(az keyvault secret show --name terraform-backend-key --vault-name ${{ env.VAULT_NAME }} --query value -o tsv)
-        export ARM_CLIENT_ID='${{secrets.ARM_CLIENT_ID}}'
-        export ARM_CLIENT_SECRET='${{secrets.ARM_CLIENT_SECRET}}'
-        export ARM_SUBSCRIPTION_ID=$(az account show --query id | xargs)
-        export ARM_TENANT_ID=$(az account show --query tenantId | xargs)
-
-
-
-        echo 'ARM_TENANT_ID:      '$(az account show --query tenantId | xargs)
-        echo 'ARM_SUBSCRIPTION_ID:'$(az account show --query id | xargs)
- 
-        popd
+    
     - name: 'Install Terraform'
       shell: bash
       run: |
@@ -83,9 +66,23 @@ jobs:
         export ARM_CLIENT_SECRET='${{secrets.ARM_CLIENT_SECRET}}'
         export ARM_SUBSCRIPTION_ID=$(az account show --query id | xargs)
         export ARM_TENANT_ID=$(az account show --query tenantId | xargs)
-        
-        terraform --version 
+
         ls
         cd src/
         terraform init 
+        popd
+
+    - name: 'Terraform Plan'
+      shell: bash
+      run: |
+        pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
+        export ARM_ACCESS_KEY=$(az keyvault secret show --name terraform-backend-key --vault-name ${{ env.VAULT_NAME }} --query value -o tsv)
+        export ARM_CLIENT_ID='${{secrets.ARM_CLIENT_ID}}'
+        export ARM_CLIENT_SECRET='${{secrets.ARM_CLIENT_SECRET}}'
+        export ARM_SUBSCRIPTION_ID=$(az account show --query id | xargs)
+        export ARM_TENANT_ID=$(az account show --query tenantId | xargs)
+
+        ls
+        cd src/
+        terraform plan -out=tf.plan
         popd
