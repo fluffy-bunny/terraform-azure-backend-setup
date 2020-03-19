@@ -52,9 +52,9 @@ jobs:
 
 
 
-        echo 'ARM_TENANT_ID:      '$ARM_TENANT_ID
-        echo 'ARM_SUBSCRIPTION_ID:'$ARM_SUBSCRIPTION_ID
-        echo 'ARM_CLIENT_ID:      '$ARM_CLIENT_ID
+        echo 'ARM_TENANT_ID:      '$(az account show --query tenantId | xargs)
+        echo 'ARM_SUBSCRIPTION_ID:'$(az account show --query id | xargs)
+ 
         popd
     - name: 'Install Terraform'
       shell: bash
