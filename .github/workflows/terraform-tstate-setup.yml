@@ -4,9 +4,10 @@ on:
   [push]
 
 env:
-  FRIENDLY_NAME: azFunc-guidgen  
-  SHORT_NAME: FuncGuidGen  
-  LOCATION: 'eastus2'                
+  FRIENDLY_NAME: heidi  
+  SHORT_NAME: heidi  
+  LOCATION: 'eastus2'
+  VAULT_NAME: 'kv-tf-heidi'                
 jobs:
   Setup-Azure-Terraform-Backend-State-Management:
     runs-on: ubuntu-latest
@@ -22,6 +23,7 @@ jobs:
     - name: 'Setup Azure Terraform Backend'
       shell: bash
       run: |
+        az account show
         pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
         ls
         bash ./bash/setup.sh ${{ env.FRIENDLY_NAME }} ${{ env.SHORT_NAME }} ${{ env.LOCATION }}
@@ -39,8 +41,13 @@ jobs:
     - name: 'EXPORT ARM_ACCESS_KEY'
       shell: bash
       run: |
+        az account show
         pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
         export ARM_ACCESS_KEY=$(az keyvault secret show --name terraform-backend-key --vault-name kv-tf-azFunc-guidgen --query value -o tsv)
+        export ARM_CLIENT_ID="${{ secrets.ARM_CLIENT_ID }}"
+        export ARM_CLIENT_SECRET="${{ secrets.ARM_CLIENT_SECRET }}"
+        export ARM_SUBSCRIPTION_ID="${{ secrets.ARM_SUBSCRIPTION_ID }}"
+        export ARM_TENANT_ID="${{ secrets.ARM_TENANT_ID }}"
         popd
     - name: 'Install Terraform'
       shell: bash

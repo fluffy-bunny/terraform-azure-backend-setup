@@ -1,6 +1,6 @@
 die () {
     echo >&2 "$@"
-    echo "$ ./setup.sh [FRIENDLY_NAME] [LOCATION] [SHORT_NAME] "
+    echo "$ ./setup.sh [FRIENDLY_NAME] [SHORT_NAME] [LOCATION]"
     exit 1
 }
 REQUIRED_ARGS=3
