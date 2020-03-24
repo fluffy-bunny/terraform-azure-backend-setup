@@ -29,10 +29,12 @@ jobs:
         echo "The secret_name was:            '${{ steps.tfsetup.outputs.secret_name }}'"
         echo "The keyvault_name was:          '${{ steps.tfsetup.outputs.keyvault_name }}'"
 
+
     - name: 'az login'
       uses: azure/login@v1
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
+        
     - name: 'Checkout GitHub Action'
       uses: actions/checkout@master
     
