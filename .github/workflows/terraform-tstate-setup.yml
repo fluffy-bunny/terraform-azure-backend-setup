@@ -11,7 +11,6 @@ env:
 jobs:
  
   Main-Terraform:
-    needs: Setup-Azure-Terraform-Backend-State-Management
     runs-on: ubuntu-latest
     steps:
     - name: Azure Terraform Setup
