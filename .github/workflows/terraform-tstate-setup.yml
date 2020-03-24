@@ -9,29 +9,27 @@ env:
   LOCATION: 'eastus2'
   VAULT_NAME: 'kv-tf-heidi'                
 jobs:
-  Setup-Azure-Terraform-Backend-State-Management:
-    runs-on: ubuntu-latest
-    steps:
-    - name: 'az login'
-      uses: azure/login@v1
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-    - name: 'Checkout GitHub Action'
-      uses: actions/checkout@master
-
-    - name: 'Setup Azure Terraform Backend'
-      shell: bash
-      run: |
-        az account show
-        pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
-        ls
-        bash ./bash/setup.sh ${{ env.FRIENDLY_NAME }} ${{ env.SHORT_NAME }} ${{ env.LOCATION }}
-        popd
+ 
   Main-Terraform:
     needs: Setup-Azure-Terraform-Backend-State-Management
     runs-on: ubuntu-latest
     steps:
+    - name: Azure Terraform Setup
+      id: tfsetup
+      uses: fluffy-bunny/action-docker-azure-terraform-setup@v0.1-alpha
+      with:
+        shortName: ${{ env.SHORT_NAME }}
+        location: ${{ env.LOCATION }}
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+        
+    - name: Get the output tfsetup
+      shell: bash
+      run: |
+        echo "The storage_account_name was:   '${{ steps.tfsetup.outputs.storage_account_name }}'"
+        echo "The container_name was:         '${{ steps.tfsetup.outputs.container_name }}'"
+        echo "The secret_name was:            '${{ steps.tfsetup.outputs.secret_name }}'"
+        echo "The keyvault_name was:          '${{ steps.tfsetup.outputs.keyvault_name }}'"
+
     - name: 'az login'
       uses: azure/login@v1
       with:
@@ -60,8 +58,8 @@ jobs:
       shell: bash
       run: |
         pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
-        echo 'export ARM_ACCESS_KEY=$(az keyvault secret show --name terraform-backend-key --vault-name ${{ env.VAULT_NAME }} --query value -o tsv)'
-        export ARM_ACCESS_KEY=$(az keyvault secret show --name terraform-backend-key --vault-name ${{ env.VAULT_NAME }} --query value -o tsv)
+        echo 'export ARM_ACCESS_KEY=$(az keyvault secret show --name ${{ steps.tfsetup.outputs.secret_name }} --vault-name ${{ steps.tfsetup.outputs.keyvault_name }} --query value -o tsv)'
+        export ARM_ACCESS_KEY=$(az keyvault secret show --name ${{ steps.tfsetup.outputs.secret_name }} --vault-name ${{ steps.tfsetup.outputs.keyvault_name }} --query value -o tsv)
         export ARM_CLIENT_ID='${{secrets.ARM_CLIENT_ID}}'
         export ARM_CLIENT_SECRET='${{secrets.ARM_CLIENT_SECRET}}'
         export ARM_SUBSCRIPTION_ID=$(az account show --query id | xargs)
@@ -76,7 +74,7 @@ jobs:
       shell: bash
       run: |
         pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
-        export ARM_ACCESS_KEY=$(az keyvault secret show --name terraform-backend-key --vault-name ${{ env.VAULT_NAME }} --query value -o tsv)
+        export ARM_ACCESS_KEY=$(az keyvault secret show --name ${{ steps.tfsetup.outputs.secret_name }} --vault-name ${{ steps.tfsetup.outputs.keyvault_name }} --query value -o tsv)
         export ARM_CLIENT_ID='${{secrets.ARM_CLIENT_ID}}'
         export ARM_CLIENT_SECRET='${{secrets.ARM_CLIENT_SECRET}}'
         export ARM_SUBSCRIPTION_ID=$(az account show --query id | xargs)
@@ -91,7 +89,7 @@ jobs:
       shell: bash
       run: |
         pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
-        export ARM_ACCESS_KEY=$(az keyvault secret show --name terraform-backend-key --vault-name ${{ env.VAULT_NAME }} --query value -o tsv)
+        export ARM_ACCESS_KEY=$(az keyvault secret show --name ${{ steps.tfsetup.outputs.secret_name }} --vault-name ${{ steps.tfsetup.outputs.keyvault_name }} --query value -o tsv)
         export ARM_CLIENT_ID='${{secrets.ARM_CLIENT_ID}}'
         export ARM_CLIENT_SECRET='${{secrets.ARM_CLIENT_SECRET}}'
         export ARM_SUBSCRIPTION_ID=$(az account show --query id | xargs)
