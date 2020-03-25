@@ -8,24 +8,6 @@ variable "az_resource_group_location" {
   type        = string
 }
 
-variable "az_storage_account_name" {
-  description = "(Required) The storage account name."
-  type        = string
-}
-
-variable "az_plan" {
-  description = "(Required) az_plan."
-  type        = string
-}
-variable "az_app_insights" {
-  description = "(Required) az_app_insights."
-  type        = string
-}
-variable "az_func_name" {
-  description = "(Required) az_func_name."
-  type        = string
-}
-
 
 variable "tags" {
   description = "Tags to help identify various services."

@@ -1,13 +1,11 @@
-name: Deploy DotNet project to Azure Function App
+name: Setup Terraform Backend State Storage and Initialize main resource group
 
 on:
   [push]
 
 env:
-  FRIENDLY_NAME: heidi  
-  SHORT_NAME: heidi  
+  SHORT_NAME: githubactions  
   LOCATION: 'eastus2'
-  VAULT_NAME: 'kv-tf-heidi'                
 jobs:
  
   Main-Terraform:
@@ -43,10 +41,10 @@ jobs:
       run: |
         pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
         sudo apt-get install wget unzip
-        if [ -d "terraform" ] 
+        if [ -f "terraform" ] 
         then
-          echo "Directory terraform exists." 
-          rm -r terraform
+          echo "File terraform exists." 
+          rm terraform
         fi
         wget https://releases.hashicorp.com/terraform/0.12.24/terraform_0.12.24_linux_amd64.zip
         unzip terraform_0.12.24_linux_amd64.zip 
