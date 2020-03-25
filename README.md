@@ -1,4 +1,4 @@
-# terraform-azure-backend-setup
+# terraform-setup-azfunc-guidgen
 Sets up an Azure storage account to use for terraform state management is a 2 step process.
 1. Create a service principal that has the rights to create resources in a given subscription.
 2. Setup azure to store terraforms state.  A tutorial can be found [here](https://docs.microsoft.com/en-us/azure/terraform/terraform-backend)  
