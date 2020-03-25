@@ -1,10 +1,28 @@
-variable "az_resource_group_name" {
+variable "resource_group_name" {
   description = "(Required) The name of the resource group where resources will be created."
   type        = string
 }
 
-variable "az_resource_group_location" {
+variable "location_name" {
   description = "(Required) The location where the resource group will reside."
+  type        = string
+}
+
+variable "storage_account_name" {
+  description = "(Required) The storage account name."
+  type        = string
+}
+
+variable "plan_name" {
+  description = "(Required) plan."
+  type        = string
+}
+variable "app_insights_name" {
+  description = "(Required) app_insights."
+  type        = string
+}
+variable "func_name" {
+  description = "(Required) func."
   type        = string
 }
 
