@@ -1,15 +1,13 @@
 # terraform-setup-azfunc-guidgen
-Sets up an Azure storage account to use for terraform state management is a 2 step process.
-1. Create a service principal that has the rights to create resources in a given subscription.
-2. Setup azure to store terraforms state.  A tutorial can be found [here](https://docs.microsoft.com/en-us/azure/terraform/terraform-backend)  
+This project terraforms azure by providing everything needed to deploy the azFunc-guidgen function.  
 
-Once that is done, we can then start creating resources the terraform way.  
-
-# Reference
-[terraform service_principal_client_secret](https://www.terraform.io/docs/providers/azurerm/guides/service_principal_client_secret.html)  
+## Prerequisite
+We need to add 5 things to the project->Settings->secrets;
+### `"AZURE_CREDENTIALS"`
+Follow the instructions here;
 [github action azure login](https://github.com/Azure/login)  
 
-# Setup you service principal
+## Setup you service principal
 ```bash
 az login
 az account set --subscription="<SUBSCRIPTION_ID>"
@@ -29,7 +27,26 @@ produces.
 This will create a service principal, which you can see in AD App Registration that has the rights to create resources in the subscription.  
 
 
+Take the data that you needed for `"AZURE_CREDENTIALS"` and add the following secrets;  
+```
+ARM_CLIENT_ID = <GUID>
+ARM_CLIENT_SECRET = <GUID>
+ARM_SUBSCRIPTION_ID = <GUID>
+ARM_TENANT_ID = <GUID>
+```
+
 # Secrets
+
+We should have 5 secrets in `"project->settings->secrets"`;  
+`"AZURE_CREDENTIALS"`
+`"ARM_CLIENT_ID"`
+`"ARM_CLIENT_SECRET"`
+`"ARM_SUBSCRIPTION_ID"`
+`"ARM_TENANT_ID"`
+
+
+
+
 [project secrets](https://github.com/fluffy-bunny/terraform-azure-backend-setup/settings/secrets)
 to use azure login, please follow the following instructions.
 [github action azure login](https://github.com/Azure/login)  
@@ -74,5 +91,8 @@ export ARM_TENANT_ID=$(az account show --query tenantId | xargs)
 since I do an Azure Login, I just pull some of the ID's based on the current logged in principal.  
 
 
+## Reference
+[terraform service_principal_client_secret](https://www.terraform.io/docs/providers/azurerm/guides/service_principal_client_secret.html)  
+[github action azure login](https://github.com/Azure/login)  
 
 
